@@ -76,7 +76,7 @@ const faqs = [
   ],
   [
     "When is launch?",
-    `The date will be announced on @${site.xHandle} once the contracts are built, tested and reviewed.`,
+    `12 September 2026, on Pons. Follow @${site.xHandle} for the exact time and the contract address.`,
   ],
 ];
 
@@ -140,8 +140,8 @@ export default function Home() {
           <section id="rules" className="section">
             <h2>The rules</h2>
             <p className="section-lede">
-              These are the planned rules. Anything marked "to be set" gets decided before launch. Once the contract is
-              verified, each rule will link to the line of code that enforces it.
+              These are the rules, and the ones with a fixed setting are already enforced in the contract code on
+              GitHub. Anything marked "to be set" gets decided before launch.
             </p>
             <div className="table-scroll">
               <table className="rules">
@@ -252,8 +252,8 @@ export default function Home() {
       <footer className="site-footer">
         <div className="wrap footer-inner">
           <p className="risk">
-            <strong>Risk notice.</strong> {site.ticker} is an experimental token that isn't live yet, and its contracts
-            haven't been reviewed. Tokens can lose all their value or become hard to sell, and on-chain transactions can't
+            <strong>Risk notice.</strong> {site.ticker} is an experimental token, and its contracts are new and
+            unaudited. Tokens can lose all their value or become hard to sell, and on-chain transactions can't
             be reversed. Stock tokens are not shares, and availability may be restricted where you live. Nothing on this
             site is financial, legal or tax advice. This site never asks you to sign anything before launch.
           </p>

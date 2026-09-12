@@ -4,6 +4,8 @@ The pre-launch website for $CHAIR, with a working simulator of the Chair, the Pr
 
 Built with Next.js. Hosted on Vercel. Source code public on GitHub.
 
+The contracts live in `contracts/` and the holder-share script in `tally/`, each with its own README.
+
 ---
 
 ## Put it online (no coding needed)

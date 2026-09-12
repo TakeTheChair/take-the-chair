@@ -1,6 +1,6 @@
 # Take The Chair ($CHAIR) — Project Spec
 
-**Status:** draft v0.3 · website built in simulation mode · no contracts deployed
+**Status:** v0.4 · website live · contracts and Tally written and tested · nothing deployed
 
 This file is the source of truth for the project. Every chat with Claude and every Claude Code session should read it first. If a rule changes, change it here before changing any code.
 
@@ -139,7 +139,6 @@ Before launch, tests must prove every one of these:
 
 **Before launch**
 - [ ] Full end-to-end run on testnet: trades, takeovers, BRRR, Tally, claims.
-- [ ] Outside review completed, findings fixed, report linked on the site.
 
 ---
 
@@ -190,7 +189,6 @@ Before launch, tests must prove every one of these:
 10. Robinhood stock tokens aren't available in the US and are restricted in other places. What does that mean for printing them to holders, and should the site restrict some regions?
 11. UK rules on promoting a crypto token (FCA financial promotions): what's allowed on X?
 12. Is there a Robinhood Chain testnet with stock tokens and price feeds to test against?
-13. Who will review the contracts and the Tally before launch?
 
 ---
 
@@ -199,10 +197,9 @@ Before launch, tests must prove every one of these:
 - **Phase 0:** Spec (this file)
 - **Phase 1:** Accounts: GitHub, Vercel, Claude Code, fresh deployer wallet, X handle, domain
 - **Phase 2:** Website with simulator mode, deployed on Vercel (built, see README)
-- **Phase 3:** Contracts (the Press, the takeover contract) and tests
-- **Phase 4:** The Tally script and tests, full end-to-end run on testnet
-- **Phase 5:** Outside review, fixes
-- **Phase 6:** Launch on Pons
+- **Phase 3:** Contracts (the Press, the takeover contract) and tests (written, 23 tests passing; venue adapters and deploy script still needed)
+- **Phase 4:** The Tally script and tests (written), full end-to-end run on testnet
+- **Phase 5:** Launch on Pons, planned 12 September 2026
 
 ---
 
@@ -214,3 +211,4 @@ Before launch, tests must prove every one of these:
 - **2026-09-11:** Website built in simulation mode (Next.js, Vercel).
 - **2026-09-12:** Site live at take-the-chair-56it.vercel.app. Added a Simulation/Live toggle; Live shows the empty launch-day state with no wallet connection.
 - **2026-09-12:** Timing: minimum 5 minutes between prints, claim delay cut from 6 hours to 5 minutes. Earliest claim about 11–13 minutes after launch.
+- **2026-09-12:** Press and TakeoverDesk contracts written with 23 Foundry tests. Tally script written with maths tests. Outside review dropped from the plan at the founder's request. Launch date set to 12 September 2026. Source public at github.com/TakeTheChair/take-the-chair.

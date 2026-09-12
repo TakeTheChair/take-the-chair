@@ -17,6 +17,10 @@ The pre-launch website for Take The Chair ($CHAIR), a token planned for Robinhoo
 - `lib/site.ts`: links and the status table.
 - `scripts/generate-art.mjs`: generates the guilloche artwork in `public/art`.
 
+## Also in this repo
+- `contracts/`: Foundry project. `src/Press.sol`, `src/TakeoverDesk.sol`, tests in `test/`. Run `forge test`. Never weaken a test to make it pass; change the spec first if a rule changes.
+- `tally/`: the Tally script (viem + OpenZeppelin merkle-tree). Pure maths in `src/shares.ts` with tests; chain code in `src/tally.ts`.
+
 ## Rules for changes
 - Keep the banknote style: colour tokens in `:root`, Old Standard TT for text, the blue security strip, guilloche bands. No gradients, rounded cards or drop shadows.
 - Sentence case everywhere. Plain, specific wording.

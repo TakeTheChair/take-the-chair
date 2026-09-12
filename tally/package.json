@@ -1,0 +1,20 @@
+{
+  "name": "chair-tally",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "tally": "tsx src/tally.ts",
+    "post": "tsx src/tally.ts --post",
+    "test": "tsx --test src/shares.test.ts"
+  },
+  "dependencies": {
+    "@openzeppelin/merkle-tree": "^1.0.7",
+    "viem": "^2.21.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "@types/node": "^22.0.0"
+  }
+}
