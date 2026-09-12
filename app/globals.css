@@ -213,10 +213,37 @@ img {
   bottom: 9px;
 }
 
+.note-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
 .note-disclaimer {
   font-style: italic;
   color: var(--ink);
-  margin-bottom: 28px;
+  max-width: 62ch;
+}
+
+.mode {
+  display: flex;
+  flex: none;
+  border: 1.5px solid var(--ink);
+}
+
+.mode .chip {
+  border: 0;
+  font-size: 16px;
+  padding: 6px 16px;
+}
+
+.field input:disabled,
+.field select:disabled {
+  color: var(--fine);
+  background: transparent;
+  cursor: not-allowed;
 }
 
 .note-top {
@@ -836,7 +863,8 @@ td {
     font-style: italic;
     color: var(--ink);
   }
-  .note-foot {
+  .note-foot,
+  .note-head {
     flex-direction: column;
     align-items: flex-start;
   }

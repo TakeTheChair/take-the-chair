@@ -108,7 +108,10 @@ function step(s: State, dt: number): State {
   return next;
 }
 
+type Mode = "sim" | "live";
+
 export default function Simulator() {
+  const [mode, setMode] = useState<Mode>("sim");
   const [s, setS] = useState<State>(initialState);
   const ref = useRef(s);
   const [speed, setSpeed] = useState(60);
@@ -121,9 +124,10 @@ export default function Simulator() {
   };
 
   useEffect(() => {
+    if (mode !== "sim") return;
     const id = setInterval(() => commit(step(ref.current, 0.2 * speed)), 200);
     return () => clearInterval(id);
-  }, [speed]);
+  }, [speed, mode]);
 
   const seatedFor = s.chair ? s.t - s.chair.since : 0;
   const price = takeoverPrice(s.chair ? s.chair.stake : null, seatedFor);
@@ -168,11 +172,27 @@ export default function Simulator() {
 
   const bagPct = (s.bag / SIM.totalSupply) * 100;
 
+  const modeSwitch = (
+    <div className="mode" role="tablist" aria-label="View">
+      <button role="tab" aria-selected={mode === "sim"} className={mode === "sim" ? "chip chip-on" : "chip"} onClick={() => setMode("sim")}>
+        Simulation
+      </button>
+      <button role="tab" aria-selected={mode === "live"} className={mode === "live" ? "chip chip-on" : "chip"} onClick={() => setMode("live")}>
+        Live
+      </button>
+    </div>
+  );
+
+  if (mode === "live") return <LivePreview modeSwitch={modeSwitch} />;
+
   return (
     <section className="note" aria-label="Simulator">
-      <p className="note-disclaimer">
-        This is a simulation with made-up numbers and prices. Nothing here is on-chain yet.
-      </p>
+      <div className="note-head">
+        <p className="note-disclaimer">
+          This is a simulation with made-up numbers and prices. Nothing here is on-chain yet.
+        </p>
+        {modeSwitch}
+      </div>
 
       <div className="note-top">
         <figure className="portrait">
@@ -365,6 +385,124 @@ export default function Simulator() {
           <button className="chip" onClick={() => commit(initialState())}>
             Reset
           </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function LivePreview({ modeSwitch }: { modeSwitch: React.ReactNode }) {
+  const fallback = stock("SPY");
+  return (
+    <section className="note" aria-label="Live view">
+      <div className="note-head">
+        <p className="note-disclaimer">
+          Live view. This is what the page shows at launch, reading straight from the contract on Robinhood Chain.
+          Nothing is deployed yet, so everything is empty.
+        </p>
+        {modeSwitch}
+      </div>
+
+      <div className="note-top">
+        <figure className="portrait">
+          <img src="/art/portrait.svg" alt="" width={340} height={420} />
+          <figcaption>
+            <span className="portrait-role">The Chair</span>
+            <span className="portrait-who">Empty seat</span>
+          </figcaption>
+        </figure>
+
+        <div className="board">
+          <div className="board-pick">
+            <p className="board-label">Default pick</p>
+            <p className="pick-ticker">{fallback.ticker}</p>
+            <p className="pick-name">{fallback.name}, until the first takeover</p>
+          </div>
+
+          <div className="meter">
+            <div className="meter-head">
+              <p className="board-label">Takeover price</p>
+              <p className="num">Minimum</p>
+            </div>
+            <div className="bar" aria-hidden="true">
+              <span className="bar-fill bar-fill-blue" style={{ width: "0%" }} />
+            </div>
+            <p className="meter-note">The minimum is set before launch and shown here in SPY.</p>
+          </div>
+
+          <div className="meter">
+            <div className="meter-head">
+              <p className="board-label">The Press</p>
+              <p className="num">0.00 SPY</p>
+            </div>
+            <div className="bar" aria-hidden="true">
+              <span className="bar-fill" style={{ width: "0%" }} />
+            </div>
+            <p className="meter-note">Fills once trading starts on Pons.</p>
+          </div>
+
+          <button className="brrr" disabled>
+            BRRR
+          </button>
+        </div>
+      </div>
+
+      <div className="note-lower">
+        <div className="panel">
+          <h3>Take the Chair</h3>
+          <p className="panel-note">Connect a wallet, enter more SPY than the takeover price, pick a stock, and the seat is yours.</p>
+          <div className="field-row">
+            <label className="field">
+              <span>SPY to spend</span>
+              <input disabled placeholder="0.00" />
+            </label>
+            <label className="field">
+              <span>Your pick</span>
+              <select disabled>
+                {STOCKS.map((st) => (
+                  <option key={st.ticker}>
+                    {st.ticker}, {st.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+          <div className="button-row">
+            <button className="btn" disabled>
+              Connect wallet
+            </button>
+            <span className="panel-note">Opens at launch. This site never asks you to sign anything before then.</span>
+          </div>
+        </div>
+
+        <div className="panel">
+          <h3>Your stash</h3>
+          <p className="panel-note">Connect a wallet to see what you've earned and claim it.</p>
+          <ul className="stash">
+            <li>
+              <span className="stash-t">Claimable</span>
+              <span className="num">0.0000</span>
+            </li>
+            <li className="stash-total">
+              <span>Pending the next Tally</span>
+              <span className="num">0.0000</span>
+            </li>
+          </ul>
+          <button className="btn" disabled>
+            Claim
+          </button>
+        </div>
+      </div>
+
+      <div className="log">
+        <h3>Print log</h3>
+        <p className="panel-note">No prints yet. Each print will link to its transaction on the chain explorer.</p>
+      </div>
+
+      <div className="note-foot">
+        <p className="notice">Contract: not deployed. The address appears here and in Status first, nowhere else.</p>
+        <div className="controls">
+          <span className="chip">Not connected to Robinhood Chain</span>
         </div>
       </div>
     </section>

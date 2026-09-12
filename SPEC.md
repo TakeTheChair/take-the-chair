@@ -208,3 +208,4 @@ Before launch, tests must prove every one of these:
 - **2026-09-11:** Rewards: hold to earn (no deposits). Shares use average balance over each earning window. Distribution via the Tally with running-total Merkle claims, a 6-hour safety delay, and a limited press key. Replaces the earlier opt-in reserves proposal.
 - **2026-09-11:** Renamed to Take The Chair ($CHAIR), @TakeTheChair. The Fed contract is now the Press, the Printing Press script is now the Tally, rate decisions are prints. Banknote visual style.
 - **2026-09-11:** Website built in simulation mode (Next.js, Vercel).
+- **2026-09-12:** Site live at take-the-chair-56it.vercel.app. Added a Simulation/Live toggle; Live shows the empty launch-day state with no wallet connection.
