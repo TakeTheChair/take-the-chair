@@ -6,6 +6,7 @@ import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IER
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {MerkleProof} from "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+import {IPonsV2LaunchFactory, IPonsV2FeeEscrow} from "./interfaces/IPons.sol";
 
 /// @notice Chainlink-style price feed.
 interface IPriceFeed {
@@ -45,6 +46,7 @@ contract Press is ReentrancyGuard {
     IPriceFeed public immutable SPY_FEED;
     ISwapper public immutable SWAPPER;
     address public immutable DESK; // the only address that can seat a Chair
+    IPonsV2FeeEscrow public immutable FEE_ESCROW; // where Pons credits creator fees; the Press claims them
     uint256 public immutable LAUNCH_TIME;
     uint256 public immutable PRINT_THRESHOLD; // SPY needed before BRRR
     uint256 public immutable MIN_TAKEOVER; // SPY
@@ -111,6 +113,7 @@ contract Press is ReentrancyGuard {
         address spyFeed,
         address swapper,
         address desk,
+        address ponsFactory,
         address tally,
         uint256 printThreshold,
         uint256 minTakeover,
@@ -127,6 +130,7 @@ contract Press is ReentrancyGuard {
         SPY_FEED = IPriceFeed(spyFeed);
         SWAPPER = ISwapper(swapper);
         DESK = desk;
+        FEE_ESCROW = IPonsV2FeeEscrow(IPonsV2LaunchFactory(ponsFactory).feeEscrow());
         tallyKey = tally;
         LAUNCH_TIME = block.timestamp;
         lastPrint = block.timestamp;
@@ -205,15 +209,27 @@ contract Press is ReentrancyGuard {
     // BRRR
     // =====================================================================
 
+    /// @notice SPY held here plus SPY waiting in the Pons fee escrow.
+    function pressBalance() public view returns (uint256) {
+        return SPY.balanceOf(address(this)) + FEE_ESCROW.balanceOfToken(address(this), address(SPY));
+    }
+
+    /// @notice Anyone can move the Press's fees out of the Pons escrow into the Press.
+    function pullFees() public returns (uint256 pulled) {
+        if (FEE_ESCROW.balanceOfToken(address(this), address(SPY)) == 0) return 0;
+        pulled = FEE_ESCROW.claimToken(address(SPY));
+    }
+
     /// @notice True when BRRR would succeed on the timing and balance rules (not the price feed).
     function canPrint() public view returns (bool) {
         return block.timestamp >= LAUNCH_TIME + MIN_GAP && block.timestamp >= lastPrint + MIN_GAP
-            && SPY.balanceOf(address(this)) >= PRINT_THRESHOLD;
+            && pressBalance() >= PRINT_THRESHOLD;
     }
 
     /// @notice Spend the whole SPY balance on the Chair's pick and set it aside for holders.
     function brrr() external nonReentrant {
         if (block.timestamp < LAUNCH_TIME + MIN_GAP || block.timestamp < lastPrint + MIN_GAP) revert TooSoon();
+        pullFees();
         uint256 spyIn = SPY.balanceOf(address(this));
         if (spyIn < PRINT_THRESHOLD) revert NotEnough();
 
@@ -336,7 +352,4 @@ contract Press is ReentrancyGuard {
         return address(feedOf[stock]) != address(0);
     }
 
-    function pressBalance() external view returns (uint256) {
-        return SPY.balanceOf(address(this));
-    }
 }

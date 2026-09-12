@@ -1,7 +1,9 @@
 "use client";
+import Live from "./Live";
 
 import { useEffect, useRef, useState } from "react";
 import { SIM, STOCKS, clock, fmt, randomWallet, stock, takeoverPrice } from "@/lib/sim";
+import { site } from "@/lib/site";
 
 type Chair = { who: string; pick: string; stake: number; since: number };
 type Print = {
@@ -119,6 +121,7 @@ export default function Simulator() {
   const ref = useRef(s);
   const [speed, setSpeed] = useState(60);
   const [amount, setAmount] = useState("");
+  const [flash, setFlash] = useState(0);
   const [pick, setPick] = useState("TSLA");
 
   const commit = (next: State) => {
@@ -187,10 +190,17 @@ export default function Simulator() {
     </div>
   );
 
-  if (mode === "live") return <LivePreview modeSwitch={modeSwitch} />;
+  if (mode === "live") return <Live modeSwitch={modeSwitch} />;
 
   return (
     <section className="note" aria-label="Simulator">
+      <span className="serial serial-tl" aria-hidden="true">No. {String(s.nextId).padStart(6, "0")}</span>
+      <span className="serial serial-br" aria-hidden="true">Series 2026</span>
+      {flash > 0 && (
+        <span key={flash} className="printed-stamp" aria-hidden="true">
+          Printed
+        </span>
+      )}
       <div className="note-head">
         <p className="note-disclaimer">
           This is a simulation with made-up numbers and prices. Nothing here is on-chain yet.
@@ -201,7 +211,7 @@ export default function Simulator() {
       <div className="note-top">
         <figure className="portrait">
           <img src="/art/portrait.svg" alt="" width={340} height={420} />
-          <figcaption>
+          <figcaption key={s.chair ? s.chair.who : "empty"} className="swap-in">
             <span className="portrait-role">The Chair</span>
             <span className="portrait-who">{s.chair ? label(s.chair.who) : "Empty seat"}</span>
           </figcaption>
@@ -226,7 +236,9 @@ export default function Simulator() {
                 ))}
               </select>
             ) : (
-              <p className="pick-ticker">{current.ticker}</p>
+              <p key={current.ticker} className="pick-ticker swap-in">
+                {current.ticker}
+              </p>
             )}
             <p className="pick-name">
               {current.name}
@@ -264,7 +276,14 @@ export default function Simulator() {
             </p>
           </div>
 
-          <button className="brrr" disabled={!full} onClick={() => commit(doPrint(ref.current, YOU))}>
+          <button
+            className={full ? "brrr brrr-ready" : "brrr"}
+            disabled={!full}
+            onClick={() => {
+              commit(doPrint(ref.current, YOU));
+              setFlash((f) => f + 1);
+            }}
+          >
             BRRR
           </button>
         </div>
@@ -361,7 +380,7 @@ export default function Simulator() {
               </thead>
               <tbody>
                 {s.log.map((p) => (
-                  <tr key={p.id}>
+                  <tr key={p.id} className="row-in">
                     <td className="num">{clock(p.at)}</td>
                     <td>{p.chair}</td>
                     <td className="strong">{p.pick}</td>
@@ -391,124 +410,6 @@ export default function Simulator() {
           <button className="chip" onClick={() => commit(initialState())}>
             Reset
           </button>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function LivePreview({ modeSwitch }: { modeSwitch: React.ReactNode }) {
-  const fallback = stock("SPY");
-  return (
-    <section className="note" aria-label="Live view">
-      <div className="note-head">
-        <p className="note-disclaimer">
-          Live view. This is what the page shows at launch, reading straight from the contract on Robinhood Chain.
-          Nothing is deployed yet, so everything is empty.
-        </p>
-        {modeSwitch}
-      </div>
-
-      <div className="note-top">
-        <figure className="portrait">
-          <img src="/art/portrait.svg" alt="" width={340} height={420} />
-          <figcaption>
-            <span className="portrait-role">The Chair</span>
-            <span className="portrait-who">Empty seat</span>
-          </figcaption>
-        </figure>
-
-        <div className="board">
-          <div className="board-pick">
-            <p className="board-label">Default pick</p>
-            <p className="pick-ticker">{fallback.ticker}</p>
-            <p className="pick-name">{fallback.name}, until the first takeover</p>
-          </div>
-
-          <div className="meter">
-            <div className="meter-head">
-              <p className="board-label">Takeover price</p>
-              <p className="num">Minimum</p>
-            </div>
-            <div className="bar" aria-hidden="true">
-              <span className="bar-fill bar-fill-blue" style={{ width: "0%" }} />
-            </div>
-            <p className="meter-note">The minimum is set before launch and shown here in SPY.</p>
-          </div>
-
-          <div className="meter">
-            <div className="meter-head">
-              <p className="board-label">The Press</p>
-              <p className="num">0.00 SPY</p>
-            </div>
-            <div className="bar" aria-hidden="true">
-              <span className="bar-fill" style={{ width: "0%" }} />
-            </div>
-            <p className="meter-note">Fills once trading starts on Pons.</p>
-          </div>
-
-          <button className="brrr" disabled>
-            BRRR
-          </button>
-        </div>
-      </div>
-
-      <div className="note-lower">
-        <div className="panel">
-          <h3>Take the Chair</h3>
-          <p className="panel-note">Connect a wallet, enter more SPY than the takeover price, pick a stock, and the seat is yours.</p>
-          <div className="field-row">
-            <label className="field">
-              <span>SPY to spend</span>
-              <input disabled placeholder="0.00" />
-            </label>
-            <label className="field">
-              <span>Your pick</span>
-              <select disabled>
-                {STOCKS.map((st) => (
-                  <option key={st.ticker}>
-                    {st.ticker}, {st.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-          <div className="button-row">
-            <button className="btn" disabled>
-              Connect wallet
-            </button>
-            <span className="panel-note">Opens at launch. This site never asks you to sign anything before then.</span>
-          </div>
-        </div>
-
-        <div className="panel">
-          <h3>Your stash</h3>
-          <p className="panel-note">Connect a wallet to see what you've earned and claim it.</p>
-          <ul className="stash">
-            <li>
-              <span className="stash-t">Claimable</span>
-              <span className="num">0.0000</span>
-            </li>
-            <li className="stash-total">
-              <span>Pending the next Tally</span>
-              <span className="num">0.0000</span>
-            </li>
-          </ul>
-          <button className="btn" disabled>
-            Claim
-          </button>
-        </div>
-      </div>
-
-      <div className="log">
-        <h3>Print log</h3>
-        <p className="panel-note">No prints yet. Each print will link to its transaction on the chain explorer.</p>
-      </div>
-
-      <div className="note-foot">
-        <p className="notice">Contract: not deployed. The address appears here and in Status first, nowhere else.</p>
-        <div className="controls">
-          <span className="chip">Not connected to Robinhood Chain</span>
         </div>
       </div>
     </section>

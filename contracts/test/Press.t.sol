@@ -4,7 +4,7 @@ pragma solidity ^0.8.24;
 import {Test} from "forge-std/Test.sol";
 import {Press} from "../src/Press.sol";
 import {TakeoverDesk} from "../src/TakeoverDesk.sol";
-import {MockToken, MockFeed, MockSwapper, MockRoute} from "./Mocks.sol";
+import {MockToken, MockFeed, MockSwapper, MockRoute, MockEscrow, MockPonsFactory} from "./Mocks.sol";
 
 contract PressTest is Test {
     MockToken spy;
@@ -15,6 +15,8 @@ contract PressTest is Test {
     MockFeed nvdaFeed;
     MockSwapper swapper;
     MockRoute route;
+    MockEscrow escrow;
+    MockPonsFactory pons;
     TakeoverDesk desk;
     Press press;
 
@@ -43,8 +45,10 @@ contract PressTest is Test {
         address[] memory feeds = new address[](1);
         stocks[0] = address(nvda);
         feeds[0] = address(nvdaFeed);
+        escrow = new MockEscrow();
+        pons = new MockPonsFactory(address(escrow));
         press = new Press(
-            address(chair), address(spy), address(spyFeed), address(swapper), address(desk), tally, THRESHOLD,
+            address(chair), address(spy), address(spyFeed), address(swapper), address(desk), address(pons), tally, THRESHOLD,
             MIN_TAKEOVER, stocks, feeds
         );
         desk.setPress(address(press));
@@ -234,7 +238,7 @@ contract PressTest is Test {
         s[0] = address(usd6);
         fs[0] = address(f);
         Press p = new Press(
-            address(chair), address(spy), address(spyFeed), address(swapper), address(desk), tally, THRESHOLD,
+            address(chair), address(spy), address(spyFeed), address(swapper), address(desk), address(pons), tally, THRESHOLD,
             MIN_TAKEOVER, s, fs
         );
         swapper.setOutPerIn(500e6); // 1 SPY ($500) -> 500 USD6
@@ -376,5 +380,16 @@ contract PressTest is Test {
         vm.prank(alice);
         vm.expectRevert(Press.BadProof.selector);
         press.claim(address(spy), 2e18, proof); // amount doesn't match leaf
+    }
+
+    function test_brrrPullsFeesFromPonsEscrow() public {
+        escrow.credit(address(press), address(spy), THRESHOLD);
+        assertEq(spy.balanceOf(address(press)), 0);
+        assertEq(press.pressBalance(), THRESHOLD);
+        vm.warp(block.timestamp + 5 minutes);
+        assertTrue(press.canPrint());
+        press.brrr();
+        assertEq(press.printCount(), 1);
+        assertEq(escrow.balanceOfToken(address(press), address(spy)), 0);
     }
 }

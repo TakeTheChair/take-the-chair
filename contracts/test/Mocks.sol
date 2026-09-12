@@ -48,3 +48,26 @@ contract MockRoute {
         chair.mint(to, out);
     }
 }
+
+contract MockEscrow {
+    mapping(address => mapping(address => uint256)) public balanceOfToken; // recipient => token => amount
+
+    function credit(address recipient, address token, uint256 amount) external {
+        MockToken(token).mint(address(this), amount);
+        balanceOfToken[recipient][token] += amount;
+    }
+
+    function claimToken(address token) external returns (uint256 amount) {
+        amount = balanceOfToken[msg.sender][token];
+        balanceOfToken[msg.sender][token] = 0;
+        MockToken(token).transfer(msg.sender, amount);
+    }
+}
+
+contract MockPonsFactory {
+    address public feeEscrow;
+
+    constructor(address escrow) {
+        feeEscrow = escrow;
+    }
+}

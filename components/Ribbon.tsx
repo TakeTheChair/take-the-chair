@@ -2,7 +2,7 @@
 export default function Ribbon() {
   return (
     <div className="ribbon" aria-hidden="true">
-      {"BRRR ".repeat(900)}
+      <div className="ribbon-text">{"BRRR ".repeat(900)}</div>
     </div>
   );
 }
