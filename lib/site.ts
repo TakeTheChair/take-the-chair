@@ -3,7 +3,7 @@
 export const site = {
   name: "Take The Chair",
   ticker: "$CHAIR",
-  xHandle: "TakeTheChair",
+  xHandle: "TakeTheChairSPY",
   // Paste your GitHub repo link here once it exists, e.g. "https://github.com/you/take-the-chair"
   githubUrl: "",
   explorerUrl: "https://robinhoodchain.blockscout.com",
