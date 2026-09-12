@@ -76,7 +76,9 @@ Numbers marked TBD get tuned before launch. Every rule has a "why" so we never f
 
 ### Prints (BRRR)
 - **Threshold:** TBD SPY. Calibrate so a busy launch prints every 15–30 minutes.
-- **Anyone can press BRRR** once the Press holds at least the threshold.
+- **Minimum gap between prints:** 5 minutes. BRRR can't be pressed until 5 minutes after launch, or 5 minutes after the last print, even if the Press is full.
+  *Why: fees are never claimable straight away, and prints land every 5–15 minutes in a busy launch instead of every few seconds.*
+- **Anyone can press BRRR** once the Press holds at least the threshold and the minimum gap has passed.
 - **Caller tip:** 0.1% of the print.
   *Why: someone always has a reason to press the button.*
 - **Price check:** the swap fails if the price is more than 1% worse than Chainlink's price.
@@ -91,13 +93,14 @@ Numbers marked TBD get tuned before launch. Every rule has a "why" so we never f
   *Why: otherwise most of the stock would be "printed" to contracts that can never claim it.*
 - **The Tally** runs after every print. It reads every $CHAIR transfer, calculates every share, publishes the full results file to the public GitHub repo, and posts one fingerprint (a Merkle root) to the Press contract.
 - **Running totals:** each posted fingerprint covers the total each wallet has *ever* earned of each stock. Claiming pays the difference between that total and what the wallet already claimed. One claim collects everything owed, at any time. Unclaimed stock never expires.
-- **Safety delay:** a newly posted fingerprint waits 6 hours before it becomes active. The previous one stays claimable during the wait.
-  *Why: anyone can rerun the script and check the numbers match. If a new fingerprint looks wrong, every holder can still claim everything they were owed under the old one.*
+- **Safety delay:** a newly posted fingerprint waits 5 minutes before it becomes active. The previous one stays claimable during the wait.
+  *Why: a short window for anyone to rerun the script and check the numbers. If a new fingerprint looks wrong, every holder can still claim everything they were owed under the old one. The tally key can never pay out more of a stock than the Press bought, so a bad result can only misallocate one print, not drain funds.*
+- **First claim timeline:** launch, 5 minutes to the first print, a minute or two for the Tally, 5 minutes safety delay. Earliest claim about 11–13 minutes after launch.
 - **Pending vs claimable:** the site shows a wallet's estimated earnings immediately after BRRR ("printing…"), then "claimable" once the fingerprint is active.
 
 ### The tally key (the one limited key)
 - The Tally posts fingerprints from a dedicated wallet used for nothing else.
-- **What the tally key can do:** post a new fingerprint (which waits the 6-hour delay), and hand its role to a new wallet.
+- **What the tally key can do:** post a new fingerprint (which waits the 5-minute delay), and hand its role to a new wallet.
 - **What the tally key can never do:** touch the SPY in the Press, change any rule or number, choose the Chair or the pick, pause anything, or pay out more of any stock than the Press actually bought for holders. The contract enforces these limits.
 - **If the Tally stops running:** printed stock stays safe in the Press contract and becomes claimable as soon as the Tally resumes.
 - **Later:** move the tally key to a multisig so no single person controls it.
@@ -127,7 +130,8 @@ Before launch, tests must prove every one of these:
 **Printing and claims**
 - [ ] Nobody can claim more than their running total, or claim the same stock twice.
 - [ ] Total claimed of each stock can never exceed what the Press bought for holders.
-- [ ] A new fingerprint can't be claimed against until its 6-hour delay passes, and the old one works meanwhile.
+- [ ] A new fingerprint can't be claimed against until its 5-minute delay passes, and the old one works meanwhile.
+- [ ] BRRR fails within 5 minutes of launch or of the previous print.
 - [ ] The tally key cannot move SPY or change anything except posting fingerprints and handing over its role.
 - [ ] Excluded addresses never earn.
 - [ ] The average-balance maths matches hand-calculated examples, including wallets that buy mid-window, sell mid-window, and transfer between wallets.
@@ -209,3 +213,4 @@ Before launch, tests must prove every one of these:
 - **2026-09-11:** Renamed to Take The Chair ($CHAIR), @TakeTheChair. The Fed contract is now the Press, the Printing Press script is now the Tally, rate decisions are prints. Banknote visual style.
 - **2026-09-11:** Website built in simulation mode (Next.js, Vercel).
 - **2026-09-12:** Site live at take-the-chair-56it.vercel.app. Added a Simulation/Live toggle; Live shows the empty launch-day state with no wallet connection.
+- **2026-09-12:** Timing: minimum 5 minutes between prints, claim delay cut from 6 hours to 5 minutes. Earliest claim about 11–13 minutes after launch.

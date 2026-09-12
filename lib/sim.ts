@@ -16,6 +16,7 @@ export const STOCKS: Stock[] = [
 
 export const SIM = {
   printThreshold: 5, // SPY needed in the Press before BRRR
+  minGapSeconds: 5 * 60, // BRRR also needs 5 minutes since the last print
   takeoverPremium: 1.1, // takeover price starts at 110% of the sitting Chair's buy
   decaySeconds: 2 * 60 * 60, // takeover price falls to the minimum over 2 hours
   minTakeover: 0.5, // SPY

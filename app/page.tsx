@@ -13,7 +13,7 @@ const steps = [
   },
   {
     title: "Anyone presses BRRR",
-    body: "When the Press is full, anyone can press BRRR. It buys the Chair's pick, checked against Chainlink's price, and tips whoever pressed.",
+    body: "When the Press is full and at least 5 minutes have passed since the last print, anyone can press BRRR. It buys the Chair's pick, checked against Chainlink's price, and tips whoever pressed.",
   },
   {
     title: "Every holder gets a share",
@@ -30,12 +30,13 @@ const rules = [
   ["Which buys count", "Only buys made through this site", "The contract can't see trades made directly on Pons."],
   ["Chair's stake", "Must keep holding it", "Sell or move the tokens and anyone can remove the Chair."],
   ["Chair's salary", "2% of each print", "Paid in the stock, only while the stake is still held."],
-  ["Print size", "To be set", "Tuned so a busy launch prints every 15 to 30 minutes."],
+  ["Print size", "To be set", "Tuned so a busy launch prints every 5 to 15 minutes."],
+  ["Gap between prints", "At least 5 minutes", "Fees are never claimable straight away, even if the Press is full."],
   ["BRRR tip", "0.1% of each print", "Someone always has a reason to press."],
   ["Price check", "Within 1% of Chainlink", "Stops anyone pumping a thin market right before the buy."],
   ["Allowed picks", "Official Robinhood stock tokens", "A Chair can't point the Press at a token they made."],
   ["Your share", "Average balance since the last print", "Buying just before a print and selling after earns almost nothing."],
-  ["Claim delay", "6 hours after each result is posted", "Time for anyone to check the numbers."],
+  ["Claim delay", "5 minutes after each result is posted", "A short window for anyone to check the numbers."],
   ["Supply", "1,000,000,000", "Fixed by Pons. No minting."],
   ["Admin keys", "One limited key", "It posts print results and nothing else. See below."],
 ];
@@ -52,6 +53,10 @@ const faqs = [
   [
     "Why don't buys on Pons count toward the Chair?",
     "The Press contract can't see trades made directly on Pons. Takeovers go through this site so the contract can check the size of the buy.",
+  ],
+  [
+    "How soon can I claim?",
+    "The first print can't happen until 5 minutes after launch. After each print, the Tally posts the result and claiming opens 5 minutes later. So the earliest claim is roughly 11 to 13 minutes after launch, and each later print becomes claimable about 6 to 7 minutes after it happens.",
   ],
   [
     "What happens if I sell?",
@@ -172,7 +177,7 @@ export default function Home() {
               <div>
                 <h3>It can</h3>
                 <ul className="key-list">
-                  <li>Post new print results, which wait 6 hours before anyone can claim against them.</li>
+                  <li>Post new print results, which wait 5 minutes before anyone can claim against them.</li>
                   <li>Hand its role to a new wallet.</li>
                 </ul>
               </div>
@@ -188,8 +193,9 @@ export default function Home() {
               </div>
             </div>
             <p className="section-lede">
-              If a result ever looks wrong, the previous one stays claimable during the 6-hour wait, so nobody loses what
-              they were already owed. Anyone can rerun the Tally and check the fingerprint matches.
+              If a result ever looks wrong, the previous one stays claimable during the 5-minute wait, so nobody loses
+              what they were already owed. Anyone can rerun the Tally and check the fingerprint matches, and the key can
+              never pay out more of a stock than the Press bought.
             </p>
           </section>
 

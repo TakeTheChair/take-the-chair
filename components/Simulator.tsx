@@ -18,6 +18,7 @@ type State = {
   chair: Chair | null;
   press: number;
   fullSince: number | null;
+  lastPrint: number;
   bag: number;
   stash: Record<string, number>;
   log: Print[];
@@ -33,6 +34,7 @@ function initialState(): State {
     chair: { who: "0x7a3f…91c2", pick: "NVDA", stake: 3.2, since: SIM.startClock - 1500 },
     press: 3.6,
     fullSince: null,
+    lastPrint: SIM.startClock - 240,
     bag: 10_000_000,
     stash: {},
     log: [],
@@ -70,6 +72,7 @@ function doPrint(s: State, caller: string): State {
     ...s,
     press: s.press - SIM.printThreshold,
     fullSince: null,
+    lastPrint: s.t,
     stash: { ...s.stash, [bought.ticker]: (s.stash[bought.ticker] ?? 0) + yours },
     log: [entry, ...s.log].slice(0, 8),
     nextId: s.nextId + 1,
@@ -99,7 +102,7 @@ function step(s: State, dt: number): State {
     next.press += amount * SIM.feeToPress;
   }
 
-  if (next.press >= SIM.printThreshold) {
+  if (next.press >= SIM.printThreshold && next.t - next.lastPrint >= SIM.minGapSeconds) {
     if (next.fullSince === null) next.fullSince = next.t;
     else if (next.t - next.fullSince > SIM.botPressDelaySeconds) next = doPrint(next, randomWallet());
   } else {
@@ -134,7 +137,8 @@ export default function Simulator() {
   const startPrice = s.chair ? s.chair.stake * SIM.takeoverPremium : SIM.minTakeover;
   const decayFrac = startPrice > SIM.minTakeover ? (price - SIM.minTakeover) / (startPrice - SIM.minTakeover) : 0;
   const pressFrac = Math.min(1, s.press / SIM.printThreshold);
-  const full = s.press >= SIM.printThreshold;
+  const gapLeft = Math.max(0, SIM.minGapSeconds - (s.t - s.lastPrint));
+  const full = s.press >= SIM.printThreshold && gapLeft === 0;
   const youSit = s.chair?.who === YOU;
   const priceToBeat = Math.ceil(price * 100) / 100;
   const current = stock(s.chair ? s.chair.pick : "SPY");
@@ -254,7 +258,9 @@ export default function Simulator() {
             <p className="meter-note">
               {full
                 ? "Full. Press BRRR before someone else takes the tip."
-                : `Fills as people trade. ${fmt(SIM.printThreshold - s.press)} SPY to go.`}
+                : s.press >= SIM.printThreshold
+                  ? `Full, but prints are at least 5 minutes apart. ${Math.ceil(gapLeft / 60)} min to go.`
+                  : `Fills as people trade. ${fmt(SIM.printThreshold - s.press)} SPY to go.`}
             </p>
           </div>
 
