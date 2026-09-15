@@ -1,7 +1,1 @@
-Upload to github.com/TakeTheChair/take-the-chair the same way as before:
-Extract All -> Add file -> Upload files -> drag these folders and files in -> Commit.
-
-Drag: app, components, lib, docs, contracts, tally, README.md, package.json, package-lock.json
-
-package.json and package-lock.json are NEW versions (wallet libraries added). Upload them or the site build fails.
-Vercel redeploys in about 2 minutes.
+Drag into GitHub: app, components, lib, README.md, SPEC.md. Commit. Vercel redeploys.

@@ -199,7 +199,7 @@ Before launch, tests must prove every one of these:
 - **Phase 2:** Website with simulator mode, deployed on Vercel (built, see README)
 - **Phase 3:** Contracts (the Press, the takeover contract) and tests (written, 23 tests passing; venue adapters and deploy script still needed)
 - **Phase 4:** The Tally script and tests (written), full end-to-end run on testnet
-- **Phase 5:** Launch on Pons, planned 12 September 2026
+- **Phase 5:** Launch on Pons, planned 14 September 2026
 
 ---
 
@@ -211,4 +211,5 @@ Before launch, tests must prove every one of these:
 - **2026-09-11:** Website built in simulation mode (Next.js, Vercel).
 - **2026-09-12:** Site live at take-the-chair-56it.vercel.app. Added a Simulation/Live toggle; Live shows the empty launch-day state with no wallet connection.
 - **2026-09-12:** Timing: minimum 5 minutes between prints, claim delay cut from 6 hours to 5 minutes. Earliest claim about 11–13 minutes after launch.
-- **2026-09-12:** Press and TakeoverDesk contracts written with 23 Foundry tests. Tally script written with maths tests. Outside review dropped from the plan at the founder's request. Launch date set to 12 September 2026. Source public at github.com/TakeTheChair/take-the-chair.
+- **2026-09-12:** Press and TakeoverDesk contracts written with 23 Foundry tests. Tally script written with maths tests. Outside review dropped from the plan at the founder's request. Launch date set to 14 September 2026. Source public at github.com/TakeTheChair/take-the-chair.
+- **2026-09-12:** Site polish: ticker tape, scroll reveals, print stamp, animated bars and ribbon, serial numbers. Placeholder adapters and deploy script added to contracts; search for PLACEHOLDER. Contract address fields added to lib/site.ts.

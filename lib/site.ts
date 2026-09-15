@@ -3,7 +3,7 @@
 export const site = {
   name: "Take The Chair",
   ticker: "$CHAIR",
-  xHandle: "TakeTheChairSPY",
+  xHandle: "TTC_SPY",
   // Paste your GitHub repo link here once it exists, e.g. "https://github.com/you/take-the-chair"
   githubUrl: "https://github.com/TakeTheChair/take-the-chair",
   explorerUrl: "https://robinhoodchain.blockscout.com",
@@ -27,5 +27,5 @@ export const status: { item: string; detail: string; state: StatusState }[] = [
   { item: "The Tally", detail: "Complete. Works out every holder's share after each print and publishes the results on GitHub.", state: "done" },
   { item: "Pons SPY pairing", detail: "SPY is an approved pair token on Pons.", state: "done" },
   { item: "Source code", detail: "Public on GitHub.", state: "done" },
-  { item: "Launch", detail: "12 September 2026 on Pons. The contract address is posted on X first, then here.", state: "in-progress" },
+  { item: "Launch", detail: "14 September 2026 on Pons. The contract address is posted on X first, then here.", state: "in-progress" },
 ];

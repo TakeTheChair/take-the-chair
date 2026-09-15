@@ -4,7 +4,7 @@ const items = [
   "Set the policy",
   "Print for every holder",
   "Launching on Pons",
-  "12 September 2026",
+  "14 September 2026",
   "Robinhood Chain",
   "Paired with SPY",
   "No presale",

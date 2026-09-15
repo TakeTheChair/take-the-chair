@@ -5,7 +5,7 @@
 **$CHAIR · Robinhood Chain · launched on Pons**
 Hold $CHAIR. Get paid in stocks.
 
-Site: [takethechair.org](https://takethechair.org) · X: [@TakeTheChairSPY](https://x.com/TakeTheChairSPY)
+Site: [takethechair.org](https://takethechair.org) · X: [@TTC_SPY](https://x.com/TTC_SPY)
 
 ---
 
@@ -69,9 +69,9 @@ The site reads all of this live from the chain:
 | Site | live, with wallet connection |
 | Press, desk and adapters | complete, 24 tests passing, not audited |
 | The Tally | complete |
-| Token on Pons | 12 September 2026 |
+| Token on Pons | 14 September 2026 |
 
-Contract addresses are posted on [@TakeTheChairSPY](https://x.com/TakeTheChairSPY) first and on the site straight after. Any address you see before that isn't ours.
+Contract addresses are posted on [@TTC_SPY](https://x.com/TTC_SPY) first and on the site straight after. Any address you see before that isn't ours.
 
 ## Honest bits
 

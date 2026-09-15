@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   title: "Take The Chair ($CHAIR)",
   description,
   openGraph: { title: "Take The Chair", description, siteName: "Take The Chair", type: "website" },
-  twitter: { card: "summary_large_image", site: "@TakeTheChairSPY", title: "Take The Chair", description },
+  twitter: { card: "summary_large_image", site: "@TTC_SPY", title: "Take The Chair", description },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

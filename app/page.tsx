@@ -46,7 +46,7 @@ const faqs = [
   ["What if the Chair sells their stake?", "Anyone can remove them. The seat goes empty, the pick resets to SPY, and the next buyer takes it at the minimum price."],
   ["Do I own the stocks?", "You receive Robinhood stock tokens in your wallet. Robinhood describes them as tokenised securities giving economic exposure to the underlying shares, with no shareholder rights. They aren't available in the US and are restricted in some other places."],
   ["Is there a presale or airdrop?", "No. The entire supply launches on Pons. Anyone offering you early $CHAIR is scamming you."],
-  ["When is launch?", `Today, 12 September 2026, on Pons. The contract address goes out on @${site.xHandle} first and appears on this page straight after.`],
+  ["When is launch?", `14 September 2026, on Pons. The contract address goes out on @${site.xHandle} first and appears on this page straight after.`],
 ];
 
 const stateLabel = { done: "Done", "in-progress": "Today", "not-started": "Not started" } as const;
